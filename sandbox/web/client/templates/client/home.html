@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+        <style>
+            pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+            .string { color: green; }
+            .number { color: darkorange; }
+            .boolean { color: blue; }
+            .null { color: magenta; }
+            .key { color: red; }
+        </style>
+    </head>
+    <body>
+        <script>
+        // string formatting, via http://stackoverflow.com/a/5077091
+        String.prototype.format = function () {
+            var args = arguments;
+            return this.replace(/\{(\d+)\}/g, function (m, n) { return args[n]; });
+        };
+        </script>
+
+        <p>
+            <b><span>Status:</span></b> <span id="statusText"></span>
+        </p>
+        <div id="buttons">
+            <div>
+                <button id="ping">Ping</button>
+            </div>
+        </div>
+        <table>
+            <tr>
+                <td>
+                    <p><b>REQUESTS</b></p>
+                    <textarea rows="30" cols="50" id="lastRequest"></textarea>
+                </td>
+                <td>
+                    <p><b>RESULTS</b> (may not be same order as requests)</p>
+                    <textarea rows="30" cols="75" id="lastResult"></textarea>
+                </td>
+            <tr>
+        </table>
+
+        <script>
+            var sock = new SockJS('http://ec2.killarny.net:10173');
+            var status_text = document.getElementById("statusText")
+            var request_text = document.getElementById("lastRequest")
+            var result_text = document.getElementById("lastResult")
+            var buttons = document.getElementById("buttons")
+            var callback_id = 0;
+
+            buttons.style.display = 'none';
+            status_text.innerHTML = "Connecting..";
+
+            function nextCallbackId() {
+                return callback_id += 1;
+            }
+
+            function sendRequest(str) {
+                content = str.format(nextCallbackId())
+                json = JSON.parse(content);
+                new_request_text = JSON.stringify(json, undefined, 4)
+                if(request_text.innerHTML.length) {
+                    request_text.innerHTML = new_request_text + '\n---\n' + request_text.innerHTML;
+                } else { request_text.innerHTML = new_request_text }
+                sock.send(content + '\n\n');
+            }
+
+            sock.onopen = function() {
+                console.log('open');
+                status_text.innerHTML = "Connected.";
+                buttons.style.display = '';
+                sendRequest('{"id":{0},"command":"ping"}');
+            };
+
+            sock.onmessage = function(e) {
+                json = JSON.parse(e.data);
+                as_string = JSON.stringify(json, undefined, 4);
+                if(result_text.innerHTML.length) {
+                    result_text.innerHTML = as_string + '\n---\n' + result_text.innerHTML;
+                } else { result_text.innerHTML = as_string; }
+                console.log('message receivedL: ' + as_string.length + ' chars');
+            };
+
+            sock.onclose = function() {
+                console.log('close');
+                status_text.innerHTML = "Disconnected.";
+                buttons.style.display = 'none';
+            };
+
+            document.getElementById("ping").onclick = function() {
+                sendRequest('{"id":{0},"command":"ping"}');
+            };
+        </script>
+    </body>
+</html>

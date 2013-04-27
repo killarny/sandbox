@@ -1,0 +1,3 @@
+-r server/requirements.txt
+-r web/requirements.txt
+bpython==0.12
