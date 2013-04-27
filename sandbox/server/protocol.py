@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import inspect
 import json
 import logging
@@ -141,15 +142,14 @@ class JSONCommandProtocol(LineOnlyReceiver):
         if isinstance(error_message, failure.Failure):
             error_message = error_message.getErrorMessage()
         # construct the message
-        message = {
-            'command': command,
-            'result': False,
-            'error': error_message,
-        }
+        message = OrderedDict()
         # some errors won't have a callback_id
         ## (ie, when invalid/incomplete JSON is recvd)
         if callback_id is not None:
             message.update({'id': callback_id})
+        # add other message data
+        message['result'] = command
+        message['error'] = error_message
         # add any extra data supplied
         if data:
             message.update(data)
@@ -160,15 +160,13 @@ class JSONCommandProtocol(LineOnlyReceiver):
         if command.startswith(self.func_prefix):
             command = command[len(self.func_prefix):]
         # construct the message
-        message = {
-            'id': callback_id,
-            'command': command,
-            'result': True,
-        }
+        message = OrderedDict()
+        message['id'] = callback_id
+        message['result'] = command
         if result:
-            message.update({'data': result})
+            message['data'] = result
         else:
-            message.update({'data': None})
+            message['data'] = None
         # add any extra data supplied
         if data:
             message.update(data)
@@ -176,9 +174,8 @@ class JSONCommandProtocol(LineOnlyReceiver):
 
     def write_event(self, event_name, **data):
         # construct the message
-        message = {
-            'event': event_name,
-        }
+        message = OrderedDict()
+        message['event'] = event_name
         # add any extra data supplied
         if data:
             message.update(data)
