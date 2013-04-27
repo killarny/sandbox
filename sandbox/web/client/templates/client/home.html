@@ -2,6 +2,7 @@
 <html>
     <head>
         <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
         <style>
             pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
             .string { color: green; }
@@ -43,14 +44,14 @@
 
         <script>
             var sock = new SockJS('http://ec2.killarny.net:10173');
-            var status_text = document.getElementById("statusText")
-            var request_text = document.getElementById("lastRequest")
-            var result_text = document.getElementById("lastResult")
-            var buttons = document.getElementById("buttons")
+            var status_text = $("#statusText")
+            var request_text = $("#lastRequest")
+            var result_text = $("#lastResult")
+            var buttons = $("#buttons")
             var callback_id = 0;
 
-            buttons.style.display = 'none';
-            status_text.innerHTML = "Connecting..";
+            buttons.hide();
+            status_text.html("Connecting..");
 
             function nextCallbackId() {
                 return callback_id += 1;
@@ -60,37 +61,37 @@
                 content = str.format(nextCallbackId())
                 json = JSON.parse(content);
                 new_request_text = JSON.stringify(json, undefined, 4)
-                if(request_text.innerHTML.length) {
-                    request_text.innerHTML = new_request_text + '\n---\n' + request_text.innerHTML;
-                } else { request_text.innerHTML = new_request_text }
+                if(request_text.html().length) {
+                    request_text.html(new_request_text + '\n---\n' + request_text.html());
+                } else { request_text.html(new_request_text); }
                 sock.send(content + '\n\n');
             }
 
             sock.onopen = function() {
                 console.log('open');
-                status_text.innerHTML = "Connected.";
-                buttons.style.display = '';
+                status_text.html("Connected.");
+                buttons.show();
                 sendRequest('{"id":{0},"command":"ping"}');
             };
 
             sock.onmessage = function(e) {
                 json = JSON.parse(e.data);
                 as_string = JSON.stringify(json, undefined, 4);
-                if(result_text.innerHTML.length) {
-                    result_text.innerHTML = as_string + '\n---\n' + result_text.innerHTML;
-                } else { result_text.innerHTML = as_string; }
+                if(result_text.html().length) {
+                    result_text.html(as_string + '\n---\n' + result_text.html());
+                } else { result_text.html(as_string); }
                 console.log('message receivedL: ' + as_string.length + ' chars');
             };
 
             sock.onclose = function() {
                 console.log('close');
-                status_text.innerHTML = "Disconnected.";
-                buttons.style.display = 'none';
+                status_text.html("Disconnected.");
+                buttons.hide();
             };
 
-            document.getElementById("ping").onclick = function() {
+            $("#ping").on('click', function() {
                 sendRequest('{"id":{0},"command":"ping"}');
-            };
+            });
         </script>
     </body>
 </html>
