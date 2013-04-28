@@ -17,3 +17,21 @@ body {
     width: 50%;
     background: #f8f8f8;
 }
+
+#intro {
+    text-align: center;
+    width: 100%;
+}
+
+#session {
+    display: none;
+}
+
+#messages {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-top: 1px solid #c2c2c2;
+    border-bottom: 1px solid #c2c2c2;
+}

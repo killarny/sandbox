@@ -6,6 +6,8 @@ import sandbox.web
 
 try:
     from sandbox.web.web.settings_local import SECRET_KEY
+    from sandbox.web.web.settings_local import GOOGLE_OAUTH2_CLIENT_ID
+    from sandbox.web.web.settings_local import GOOGLE_OAUTH2_CLIENT_SECRET
 except ImportError as e:
     print color_style().ERROR('Error in settings_local.py: {error}'.format(
         error=str(e)
@@ -19,6 +21,9 @@ STATIC_ROOT = os.path.join(MEDIA_ROOT, 'static')
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_ERROR_URL = '/login-error/'
 
 DATABASES = {
     'default': {
@@ -29,6 +34,7 @@ DATABASES = {
 INSTALLED_APPS = (
     'grappelli',
     'django.contrib.auth', 
+    'social_auth',
     'django.contrib.contenttypes', 
     'django.contrib.sessions', 
     'django.contrib.sites', 
@@ -60,6 +66,12 @@ ROOT_URLCONF = 'sandbox.web.web.urls'
 SETTINGS_MODULE = 'sandbox.web.web.settings'
 WSGI_APPLICATION = 'sandbox.web.web.wsgi.application'
 SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    'social_auth.backends.google.GoogleOAuth2Backend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
 
 LOGGING = {
     'loggers': {
