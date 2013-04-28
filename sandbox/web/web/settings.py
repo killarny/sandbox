@@ -23,7 +23,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
-LOGIN_ERROR_URL    = '/login/error/'
+LOGIN_ERROR_URL = '/login-error/'
 
 DATABASES = {
     'default': {
