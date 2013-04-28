@@ -1,6 +1,16 @@
 import os.path
+import sys
+from django.core.management.color import color_style
 import sandbox
 import sandbox.web
+
+try:
+    from sandbox.web.web.settings_local import SECRET_KEY
+except ImportError as e:
+    print color_style().ERROR('Error in settings_local.py: {error}'.format(
+        error=str(e)
+    ))
+    sys.exit(1)
 
 REPOSITORY_ROOT = sandbox.__path__[0]
 WEB_ROOT = sandbox.web.__path__[0]
@@ -50,10 +60,6 @@ ROOT_URLCONF = 'sandbox.web.web.urls'
 SETTINGS_MODULE = 'sandbox.web.web.settings'
 WSGI_APPLICATION = 'sandbox.web.web.wsgi.application'
 SITE_ID = 1
-
-SECRET_KEY = 'jki(26r@5%za%i-r-)pblu-sah--$r70s(0vvp3+k7&p_8b_bl'
-import warnings
-warnings.warn('Change the secret key before deploying!')
 
 LOGGING = {
     'loggers': {
