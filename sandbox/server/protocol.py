@@ -26,6 +26,14 @@ class JSONCommandProtocol(LineOnlyReceiver):
     delimiter = '\n\n'
     func_prefix = 'command_'
     protected_commands = ['parser']
+    hash = None
+    
+    @property
+    def is_connected(self):
+        try:
+            return bool(self.transport)
+        except AttributeError:
+            return False
     
     @property
     def client_info(self):
@@ -165,8 +173,6 @@ class JSONCommandProtocol(LineOnlyReceiver):
         message['result'] = command
         if result:
             message['data'] = result
-        else:
-            message['data'] = None
         # add any extra data supplied
         if data:
             message.update(data)

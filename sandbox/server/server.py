@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from argparse import ArgumentParser
+import hashlib
 import sys
+from uuid import uuid4
 from twisted.internet import reactor
 from twisted.internet.protocol import ServerFactory
 from txsockjs.factory import SockJSFactory
@@ -26,18 +28,34 @@ class Server(ServerFactory):
     def __init__(self, options):
         self.options = options
 
-    def buildProtocol(self, client_info):
-        client_connection = ServerFactory.buildProtocol(self, client_info)
+    def buildProtocol(self, peer):
+        client_connection = ServerFactory.buildProtocol(self, peer)
+        
+        # construct a client hash
+        m = hashlib.md5()
+        m.update(str(uuid4()))
+        client_hash = m.hexdigest()
+        
+        # store hash on connection object
+        client_connection.hash = client_hash
 
         # add this new client to the dict of connected clients
-        self.clients['unauth'].update({client_info: client_connection})
+        self.clients['unauth'].update({peer: {
+            'hash': client_hash,
+            'connection': client_connection,
+        }})
 
         # log about this new client when debug mode is enabled
         if self.options.debug:
             logger.info('Client connected from {host}:{port}.'.format(
-                host = client_info.host, 
-                port = client_info.port,
+                host = peer.host, 
+                port = peer.port,
             ))
+
+        # tell the other clients that someone new has connected
+        self.broadcast_event('client_connected', {
+            'id': client_hash,
+        })
 
         return client_connection
 
@@ -56,20 +74,43 @@ class Server(ServerFactory):
             port=self.port,
         ))
         
-    def client_disconnected(self, client_info, reason):
+    def client_disconnected(self, peer, reason):
         # remove the client from the dict of connected clients
         for category, clients in self.clients.iteritems():
             try:
-                clients.pop(client_info)
+                client_info = clients.pop(peer)
             except KeyError:
-                pass
-                
-        # log disconnections when debug is enabled
-        if self.options.debug:
-            logger.info('Client from {host}:{port} has disconnected.'.format(
-                host=client_info.host, 
-                port=client_info.port,
-            ))
+                continue
+            
+            # get the hash for this client
+            client_hash = client_info.get('hash')
+                    
+            # log disconnections when debug is enabled
+            if self.options.debug:
+                logger.info('Client from {host}:{port} has disconnected.'.format(
+                    host=peer.host, 
+                    port=peer.port,
+                ))
+
+            # tell the other clients that someone has disconnected
+            self.broadcast_event('client_disconnected', {
+                'id': client_hash, 
+            })
+            
+    def broadcast_event(self, event_name, event_data, authed_only=False):
+        # convert non-dict data to a dict
+        if type(event_data) != dict:
+            event_data = {'info': event_data}
+        # write an event to each client
+        for category, clients in self.clients.iteritems():
+            if authed_only and category is not 'authed':
+                continue
+            for peer, client_info in clients.iteritems():
+                hash = client_info.get('hash')
+                connection = client_info.get('connection')
+                if not connection or not connection.is_connected:
+                    continue
+                connection.write_event(event_name, **event_data)
 
 
 if __name__ == '__main__':

@@ -1,31 +1,37 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-        <script src="{{ STATIC_URL }}client/client.js"></script>
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/home.css">
     </head>
     <body>
-        <p>
-            <b><span>Status:</span></b> <span id="statusText"></span>
-        </p>
-        <div id="buttons">
-            <div>
-                <button id="ping">Ping</button>
+        <div id="intro">
+            <h1>sandbox</h1>
+            <span>Nothing to see here.</span>
+        </div>
+        <div id="chat">
+            <div id="history">
+                <span id="title">history</span>
+                <div id="history-entry">
+                    <span id="text"></span>
+                </div>
+            </div>
+            <div id="player-list">
+                <span id="title">clients</span>
+                <div id="client-info">
+                    <span id="name"></span>
+                </div>
+            </div>
+            <div id="input">
+                <span id="title">input</span>
+                <input/>
+            </div>
+            <div id="status">
+                <span id="title">status</span>
             </div>
         </div>
-        <table>
-            <tr>
-                <td>
-                    <p><b>REQUESTS</b></p>
-                    <textarea rows="30" cols="50" id="lastRequest"></textarea>
-                </td>
-                <td>
-                    <p><b>RESULTS</b> (may not be same order as requests)</p>
-                    <textarea rows="30" cols="75" id="lastResult"></textarea>
-                </td>
-            <tr>
-        </table>
+
+        <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+        <script src="{{ STATIC_URL }}client/client.js"></script>
     </body>
 </html>

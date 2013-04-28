@@ -1,5 +1,97 @@
-pre {
-    outline: 1px dotted #ccc;
-    padding: 5px;
-    margin: 5px;
+html, body {
+    padding: 0px;
+    margin: 0px;
+    height: 90%;
+    background: #ffffff;
+    height: 500px;
+}
+
+body {
+    font: normal 11px/15px sans-serif;
+    margin-left: 25%;
+    margin-right: 25%;
+    padding: 20px;
+    border-left: 2px solid #c2c2c2;
+    border-right: 2px solid #c2c2c2;
+    border-bottom: 2px solid #c2c2c2;
+    width: 50%;
+    background: #f8f8f8;
+}
+
+#intro {
+    text-align: center;
+    width: 100%;
+}
+
+#history {
+    background: #f2f2f2;
+    height: 400px;
+    width: calc(100% - 150px);
+    overflow: auto;
+    font: normal 11px/15px arial;
+    float: left;
+    border: 1px solid #c2c2c2;
+    border-left: none;
+    border-right: none;
+}
+
+#history #title {
+    text-align: center;
+    width: 100%;
+}
+
+#player-list {
+    float: right;
+    background: #d2d2d2;
+    height: 400px;
+    width: 150px;
+    border: 1px solid #c2c2c2;
+    border-left: none;
+    border-right: none;
+    overflow: auto;
+}
+
+.disconnected {
+    background: #ffdddd;
+}
+
+.connected {
+    background: #ddffdd;
+}
+
+#input {
+    width: calc(100% - 100px);
+    float: right;
+    line-height: 3em;
+    margin: 0px;
+    padding: 0px;
+    border-bottom: 1px solid #c2c2c2;
+    background: #f2f2f2;
+}
+
+#input #title {
+    display: none;
+}
+
+#input input {
+    width: calc(100% - 20px);
+    border: 1px solid #c2c2c2;
+    background: none;
+    padding: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin: 0px;
+    font: normal 11px/15px sans-serif;
+}
+
+#status {
+    clear: left;
+    float: left;
+    line-height: 3em;
+    background: #f2f2f2;
+    text-align: center;
+    width: 100px;
+    border-bottom: 1px solid #c2c2c2;
+    margin: 0px;
+    padding: 0px;
 }
