@@ -1,0 +1,19 @@
+html, body {
+    padding: 0px;
+    margin: 0px;
+    height: 90%;
+    background: #ffffff;
+    height: 500px;
+}
+
+body {
+    font: normal 11px/15px sans-serif;
+    margin-left: 25%;
+    margin-right: 25%;
+    padding: 20px;
+    border-left: 2px solid #c2c2c2;
+    border-right: 2px solid #c2c2c2;
+    border-bottom: 2px solid #c2c2c2;
+    width: 50%;
+    background: #f8f8f8;
+}
