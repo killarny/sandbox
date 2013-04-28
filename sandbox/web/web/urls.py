@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^grappelli/', include('grappelli.urls')),
+    url(r'', include('social_auth.urls')),
     url(r'', include('sandbox.web.client.urls')),
 )
