@@ -5,6 +5,8 @@ String.prototype.format = function () {
 };
 
 $(window).load(function() {
+    var session_id = $('#session').html(); $('#session').remove();
+    console.log('session id: ' + session_id);
     var sock = new SockJS('http://ec2.killarny.net:10173');
     var status_text = $("#status #title")
     var callback_id = 0;

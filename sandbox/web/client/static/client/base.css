@@ -17,3 +17,7 @@ body {
     width: 50%;
     background: #f8f8f8;
 }
+
+#session {
+    display: none;
+}
