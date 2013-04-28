@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/base.css">
+    </head>
+    <body>
+        <div id="intro">
+            <h1>sandbox</h1>
+            <span>Nothing to see here.</span>
+        </div>
+        <div id="login">
+            <a href="{% url "socialauth_begin" "google-oauth2" %}">Login</a>
+        </div>
+    </body>
+</html>
