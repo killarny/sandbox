@@ -2,14 +2,26 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/base.css">
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/login.css">
     </head>
     <body>
         <div id="intro">
             <h1>sandbox</h1>
             <span>Nothing to see here.</span>
         </div>
+        {% if messages %}
+        <div id="messages">
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
         <div id="login">
-            <a href="{% url "socialauth_begin" "google-oauth2" %}">Login</a>
+            <a href="{% url "socialauth_begin" "google-oauth2" %}" alt="Signin with Google">
+                <img src="{{ STATIC_URL }}client/images/google-signin.png"/>
+            </a>
         </div>
     </body>
 </html>
