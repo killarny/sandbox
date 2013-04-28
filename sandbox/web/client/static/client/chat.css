@@ -34,6 +34,14 @@
     background: #ddffdd;
 }
 
+.client-connected {
+    color: #00c200;
+}
+
+.client-disconnected {
+    color: #c20000;
+}
+
 #input {
     width: calc(100% - 100px);
     float: right;

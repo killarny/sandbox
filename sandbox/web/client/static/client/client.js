@@ -20,6 +20,7 @@ $(window).load(function() {
     history_entry_template.hide();
 
     status_text.html("connecting..");
+    $('#input input').focus();
 
     function nextCallbackId() {
         return callback_id += 1;
@@ -32,11 +33,11 @@ $(window).load(function() {
         console.log('TX: ' + as_string);
     }
 
-    function add_line_to_history(text) {
+    function add_line_to_history(classname, text) {
         // add line to history
         var history_entry = history_entry_template.clone();
         $('#history').append(history_entry)
-        history_entry.find('#text').text(text);
+        history_entry.find('#text').text(text).addClass(classname);
         history_entry.show();
         // scroll to bottom of history
         $('#history').animate({ scrollTop: $('#history').prop("scrollHeight") - $('#history').height() }, 0);
@@ -83,19 +84,19 @@ $(window).load(function() {
                 var id = json['id'];
                 var name = json['username'];
                 add_to_player_list(id, name);
-                add_line_to_history('{0} has joined.'.format(name));
+                add_line_to_history('client-connected', '{0} has joined.'.format(name));
                 break;
             case 'client_disconnected':
                 var id = json['id'];
                 var name = json['username'];
                 remove_from_player_list(id, name);
-                add_line_to_history('{0} has left.'.format(name));
+                add_line_to_history('client-disconnected', '{0} has left.'.format(name));
                 break;
             case 'chat_say':
                 var author_id = json['author_id'];
                 var author_name = json['author_username'];
                 var message = json['message'];
-                add_line_to_history('{0}: {1}'.format(author_name, message));
+                add_line_to_history('chat-say', '{0}: {1}'.format(author_name, message));
                 break;
         }
     };
