@@ -52,11 +52,6 @@ class Server(ServerFactory):
                 port = peer.port,
             ))
 
-        # tell the other clients that someone new has connected
-        self.broadcast_event('client_connected', {
-            'id': client_hash,
-        })
-
         return client_connection
 
     def listen(self, **sockjs_options):
@@ -84,6 +79,7 @@ class Server(ServerFactory):
             
             # get the hash for this client
             client_hash = client_info.get('hash')
+            connection = client_info.get('connection')
                     
             # log disconnections when debug is enabled
             if self.options.debug:
@@ -95,9 +91,31 @@ class Server(ServerFactory):
             # tell the other clients that someone has disconnected
             self.broadcast_event('client_disconnected', {
                 'id': client_hash, 
+                'username': connection.user.username,
             })
             
-    def broadcast_event(self, event_name, event_data, authed_only=False):
+    def client_authed(self, peer):
+        """A client has become authorized.
+        """
+        if peer not in self.clients['unauth']:
+            return
+        client_info = self.clients['unauth'].pop(peer)
+        hash = client_info.get('hash')
+        connection = client_info.get('connection')
+        
+        # move client connection object into the authed dictionary
+        self.clients['authed'].update({
+            peer: client_info,
+        })
+
+        # tell the other clients that someone new has connected
+        self.broadcast_event('client_connected', {
+            'id': hash,
+            'username': connection.user.username,
+        })
+
+    def broadcast_event(self, event_name, event_data, 
+            authed_only=True, exclude=[]):
         # convert non-dict data to a dict
         if type(event_data) != dict:
             event_data = {'info': event_data}
@@ -106,6 +124,8 @@ class Server(ServerFactory):
             if authed_only and category is not 'authed':
                 continue
             for peer, client_info in clients.iteritems():
+                if peer in exclude:
+                    continue
                 hash = client_info.get('hash')
                 connection = client_info.get('connection')
                 if not connection or not connection.is_connected:

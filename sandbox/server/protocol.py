@@ -1,7 +1,14 @@
 from collections import OrderedDict
+import datetime
 import inspect
 import json
 import logging
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sandbox.web.web.settings")
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
+import pytz
 from twisted.internet import defer
 from twisted.protocols.basic import LineOnlyReceiver
 from twisted.python import failure
@@ -27,6 +34,7 @@ class JSONCommandProtocol(LineOnlyReceiver):
     func_prefix = 'command_'
     protected_commands = ['parser']
     hash = None
+    user = None
     
     @property
     def is_connected(self):
@@ -53,6 +61,10 @@ class JSONCommandProtocol(LineOnlyReceiver):
                 line=line, 
                 delim='-'*80,
             ))
+            
+        # get the datetime right now
+        utcnow = datetime.datetime.utcnow()
+        utcnow = utcnow.replace(tzinfo=pytz.utc)
         
         # parse the line as a json structure
         try:
@@ -70,11 +82,66 @@ class JSONCommandProtocol(LineOnlyReceiver):
             self.write_error('id is required', 'parser', None)
             return
             
+        # find a session id in the request
+        try:
+            session_id = request.pop('session_id')
+        except KeyError:
+            self.write_error('session_id is required', 'parser', callback_id, 
+                die=True)
+            return
+
+        # turn django debugging off temporarily to cut down on noise
+        django_debug = settings.DEBUG
+        settings.DEBUG = False
+        # check if valid session
+        try:
+            session = Session.objects.get(pk=session_id)
+        except Session.DoesNotExist:
+            self.write_error('session is expired', 'parser', callback_id,
+                die=True)
+            return
+        finally:
+            settings.DEBUG = django_debug
+        
+        # check if session is expired
+        if session.expire_date < utcnow:
+            self.write_error('session is expired', 'parser', callback_id,
+                die=True)
+            return
+            
+        # store session data in namespace
+        session_data = session.get_decoded()
+        
+        # turn django debugging off temporarily to cut down on noise
+        django_debug = settings.DEBUG
+        settings.DEBUG = False
+        # get the user associated with the session
+        try:
+            user = User.objects.get(pk=session_data['_auth_user_id'])
+        except User.DoesNotExist:
+            self.write_error('session is invalid', 'parser', callback_id,
+                die=True)
+            return
+        finally:
+            settings.DEBUG = django_debug
+        
+        # check that user is valid
+        if not user.is_active:
+            self.write_error('your account is inactive', 'parser', callback_id,
+                die=True)
+            return
+            
+        # save user info in instance variable
+        self.user = user
+        
+        # tell server that this user is authed
+        self.factory.client_authed(self.client_info)
+
         # find a command in the request
         try:
             command = request.pop('command')
         except KeyError:
-            self.write_error('command is required', 'parser', None)
+            self.write_error('command is required', 'parser', callback_id)
             return
             
         # protect some commands from being invoked directly
@@ -142,7 +209,7 @@ class JSONCommandProtocol(LineOnlyReceiver):
                 logger.exception(e)
             self.write_error(str(e), command, callback_id)
     
-    def write_error(self, error_message, command, callback_id, **data):
+    def write_error(self, error_message, command, callback_id, die=False):
         # sanitize the prefix from the command, if needed
         if command.startswith(self.func_prefix):
             command = command[len(self.func_prefix):]
@@ -158,10 +225,10 @@ class JSONCommandProtocol(LineOnlyReceiver):
         # add other message data
         message['result'] = command
         message['error'] = error_message
-        # add any extra data supplied
-        if data:
-            message.update(data)
         self.transport.write(json.dumps(message))
+        # close the connection if die is True
+        if die:
+            self.transport.loseConnection()
 
     def write_result(self, result, command, callback_id, **data):
         # sanitize the prefix from the command, if needed

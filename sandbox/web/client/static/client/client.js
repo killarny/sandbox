@@ -26,7 +26,7 @@ $(window).load(function() {
     }
 
     function sendRequest(str) {
-        json = JSON.parse(str.format(nextCallbackId()));
+        json = JSON.parse(str.format(nextCallbackId(), session_id));
         as_string = JSON.stringify(json, undefined, 4);
         sock.send(as_string + '\n\n');
         console.log('TX: ' + as_string);
@@ -42,11 +42,11 @@ $(window).load(function() {
         $('#history').animate({ scrollTop: $('#history').prop("scrollHeight") - $('#history').height() }, 0);
     };
     
-    function add_to_player_list(id) {
+    function add_to_player_list(id, name) {
         // add entry to player list
         var client_info = client_info_template.clone();
         client_info.attr('id', id);
-        client_info.find('#name').text(id);
+        client_info.find('#name').text(name);
         client_info.insertAfter(client_info_template).show();
     };
     
@@ -61,7 +61,7 @@ $(window).load(function() {
     sock.onopen = function() {
         console.log('open');
         status_text.html("connected");
-        sendRequest('{"id":{0},"command":"client_list"}');
+        sendRequest('{"id":{0},"session_id":"{1}","command":"client_list"}');
     };
 
     sock.onmessage = function(e) {
@@ -72,8 +72,8 @@ $(window).load(function() {
         switch(json['result']) {
             case 'client_list':
                 if(json['data'] != undefined) {
-                    $.each(json['data'], function(i, id) {
-                        add_to_player_list(id);
+                    $.each(json['data'], function(i, info) {
+                        add_to_player_list(info['id'], info['username']);
                     });
                 }
                 break;
@@ -81,18 +81,21 @@ $(window).load(function() {
         switch(json['event']) {
             case 'client_connected':
                 var id = json['id'];
-                add_to_player_list(id);
-                add_line_to_history('{0} has joined.'.format(id));
+                var name = json['username'];
+                add_to_player_list(id, name);
+                add_line_to_history('{0} has joined.'.format(name));
                 break;
             case 'client_disconnected':
                 var id = json['id'];
-                remove_from_player_list(id);
-                add_line_to_history('{0} has left.'.format(id));
+                var name = json['username'];
+                remove_from_player_list(id, name);
+                add_line_to_history('{0} has left.'.format(name));
                 break;
             case 'chat_say':
                 var author_id = json['author_id'];
+                var author_name = json['author_username'];
                 var message = json['message'];
-                add_line_to_history('{0}: {1}'.format(author_id, message));
+                add_line_to_history('{0}: {1}'.format(author_name, message));
                 break;
         }
     };
@@ -109,7 +112,7 @@ $(window).load(function() {
             // clear text box
             $(this).val('');
             // construct and send command to server
-            sendRequest('{"id":{0},"command":"chat_say","message":"' + text + '"}');
+            sendRequest('{"id":{0},"session_id":"{1}","command":"chat_say","message":"' + text + '"}');
             // don't submit the form
             return false;
         }
