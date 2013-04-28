@@ -69,10 +69,11 @@ $(window).load(function() {
         // parse events
         switch(json['result']) {
             case 'client_list':
-                console.log('HERP!' + json);
-                $.each(json['data'], function(i, id) {
-                    add_to_player_list(id);
-                });
+                if(json['data'] != undefined) {
+                    $.each(json['data'], function(i, id) {
+                        add_to_player_list(id);
+                    });
+                }
                 break;
         }
         switch(json['event']) {
