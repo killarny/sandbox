@@ -2,3 +2,4 @@ docutils==0.10
 Django==1.5.1
 django-grappelli==2.4.4
 django-social-auth==0.7.23
+django-debug-toolbar==0.9.4

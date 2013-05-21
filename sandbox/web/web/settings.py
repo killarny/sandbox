@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles', 
     'django.contrib.admin', 
     'django.contrib.admindocs', 
+    'debug_toolbar',
     'sandbox.web.api',
     'sandbox.web.client',
 )
@@ -54,6 +55,14 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
+)
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 GRAPPELLI_ADMIN_TITLE = "Sandbox"
