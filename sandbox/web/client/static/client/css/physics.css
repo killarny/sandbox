@@ -1,0 +1,15 @@
+#physics {
+    background: #f2f2f2;
+    height: 435px;
+    width: 100%;
+    overflow: auto;
+    font: normal 11px/15px arial;
+    border: 3px solid #c2c2c2;
+    border-left: 1px solid #c2c2c2;
+    border-right: 1px solid #c2c2c2;
+}
+
+#canvas {
+    width: 100%;
+    height: 95%;
+}

@@ -16,3 +16,9 @@ def chat(request):
         'session_id': request.session.session_key,
     }
     return render(request, 'client/chat.html', context)
+
+def physics(request):
+    context = {
+        'session_id': request.session.session_key,
+    }
+    return render(request, 'client/physics.html', context)
