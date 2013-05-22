@@ -8,6 +8,7 @@ try:
     from sandbox.web.web.settings_local import SECRET_KEY
     from sandbox.web.web.settings_local import GOOGLE_OAUTH2_CLIENT_ID
     from sandbox.web.web.settings_local import GOOGLE_OAUTH2_CLIENT_SECRET
+    from sandbox.web.web.settings_local import INTERNAL_IPS
 except ImportError as e:
     print color_style().ERROR('Error in settings_local.py: {error}'.format(
         error=str(e)
