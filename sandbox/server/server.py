@@ -30,12 +30,12 @@ class Server(ServerFactory):
 
     def buildProtocol(self, peer):
         client_connection = ServerFactory.buildProtocol(self, peer)
-        
+
         # construct a client hash
         m = hashlib.md5()
         m.update(str(uuid4()))
         client_hash = m.hexdigest()
-        
+
         # store hash on connection object
         client_connection.hash = client_hash
 
@@ -48,7 +48,7 @@ class Server(ServerFactory):
         # log about this new client when debug mode is enabled
         if self.options.debug:
             logger.info('Client connected from {host}:{port}.'.format(
-                host = peer.host, 
+                host = peer.host,
                 port = peer.port,
             ))
 
@@ -65,10 +65,10 @@ class Server(ServerFactory):
         reactor.listenTCP(self.port, sockjs_factory, interface=self.host)
         # log about our activity
         logger.info('Listening at ws://{host}:{port}'.format(
-            host=self.host, 
+            host=self.host,
             port=self.port,
         ))
-        
+
     def client_disconnected(self, peer, reason):
         # remove the client from the dict of connected clients
         for category, clients in self.clients.iteritems():
@@ -76,24 +76,24 @@ class Server(ServerFactory):
                 client_info = clients.pop(peer)
             except KeyError:
                 continue
-            
+
             # get the hash for this client
             client_hash = client_info.get('hash')
             connection = client_info.get('connection')
-                    
+
             # log disconnections when debug is enabled
             if self.options.debug:
                 logger.info('Client from {host}:{port} has disconnected.'.format(
-                    host=peer.host, 
+                    host=peer.host,
                     port=peer.port,
                 ))
 
             # tell the other clients that someone has disconnected
             self.broadcast_event('client_disconnected', {
-                'id': client_hash, 
-                'username': connection.user.username,
+                'id': client_hash,
+                'username': connection.user.username if connection.user else '',
             })
-            
+
     def client_authed(self, peer):
         """A client has become authorized.
         """
@@ -102,7 +102,7 @@ class Server(ServerFactory):
         client_info = self.clients['unauth'].pop(peer)
         hash = client_info.get('hash')
         connection = client_info.get('connection')
-        
+
         # move client connection object into the authed dictionary
         self.clients['authed'].update({
             peer: client_info,
@@ -114,7 +114,7 @@ class Server(ServerFactory):
             'username': connection.user.username,
         })
 
-    def broadcast_event(self, event_name, event_data, 
+    def broadcast_event(self, event_name, event_data,
             authed_only=True, exclude=[]):
         # convert non-dict data to a dict
         if type(event_data) != dict:
