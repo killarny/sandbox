@@ -15,6 +15,37 @@
     width: 100%;
 }
 
+#history ul {
+    padding: 5px;
+}
+
+.history-entry {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.history-entry .status {
+    color: darkkhaki;
+}
+
+.history-entry .joined {
+    color: darkseagreen;
+}
+
+.history-entry .left {
+    color: darksalmon;
+}
+
+.history-entry .say .author {
+    background: darkseagreen;
+    width: 150px;
+    float: left;
+    text-align: right;
+    margin-right: 5px;
+    padding-right: 5px;
+}
+
 #player-list {
     float: right;
     background: #d2d2d2;
@@ -24,22 +55,25 @@
     border-left: none;
     border-right: none;
     overflow: auto;
+    padding: 0px;
 }
 
-.disconnected {
+#player-list ul {
+    padding: 5px;
+}
+
+.player {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+#input.disconnected, #status.disconnected {
     background: #ffdddd;
 }
 
-.connected {
+#input.connected, #status.connected {
     background: #ddffdd;
-}
-
-.client-connected {
-    color: #00c200;
-}
-
-.client-disconnected {
-    color: #c20000;
 }
 
 #input {

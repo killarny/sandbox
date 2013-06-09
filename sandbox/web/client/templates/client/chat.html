@@ -1,39 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="chat">
     <head>
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/css/base.css">
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/css/chat.css">
+        <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+        <script>
+            var session_id = "{{ session_id }}";
+        </script>
+        <script src="{{ STATIC_URL }}client/js/chat-angular.js"></script>
     </head>
-    <body>
-        <div id="session">{{ session_id }}</div>
+
+    <body ng-controller="client">
         <div id="intro">
             <h1>sandbox</h1>
             <span>Nothing to see here.</span>
         </div>
         <div id="chat">
             <div id="history">
-                <span id="title">history</span>
-                <div id="history-entry">
-                    <span id="text"></span>
-                </div>
+                <ul>
+                    <li class="history-entry" ng-repeat="entry in log">
+                        <div ng-switch on="entry.type">
+                            <div class="<% entry.type %>" ng-switch-when="status">
+                                <span><% entry.message %></span>
+                            </div>
+                            <div class="<% entry.type %>" ng-switch-when="joined">
+                                <span><% entry.user.username %> joined.</span>
+                            </div>
+                            <div class="<% entry.type %>" ng-switch-when="left">
+                                <span><% entry.user.username %> left.</span>
+                            </div>
+                            <div class="<% entry.type %>" ng-switch-when="say">
+                                <div class="author"><% entry.author.username %></div>
+                                <div class="message"><% entry.message %></div>
+                            </div>
+                            <div class="default" ng-switch-default>
+                                <span><% entry %></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
             <div id="player-list">
-                <span id="title">clients</span>
-                <div id="client-info">
-                    <span id="name"></span>
-                </div>
+                <ul>
+                    <li class="player" ng-repeat="user in users"><% user.username %></li>
+                </ul>
             </div>
-            <div id="input">
+            <div id="input" class="<% connection.status %>">
                 <span id="title">input</span>
-                <input/>
+                <form ng-submit="input_send()"><input ng-model="input"/></form>
             </div>
-            <div id="status">
-                <span id="title">status</span>
+            <div id="status" class="<% connection.status %>">
+                <span id="title"><% connection.status %></span>
             </div>
         </div>
-
-        <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-        <script src="{{ STATIC_URL }}client/js/client.js"></script>
     </body>
 </html>
