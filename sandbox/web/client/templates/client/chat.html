@@ -27,13 +27,13 @@
                                 <span><% entry.message %></span>
                             </div>
                             <div class="<% entry.type %>" ng-switch-when="joined">
-                                <span><% entry.user.username %> joined.</span>
+                                <span><% entry.user.fullname %> joined.</span>
                             </div>
                             <div class="<% entry.type %>" ng-switch-when="left">
-                                <span><% entry.user.username %> left.</span>
+                                <span><% entry.user.fullname %> left.</span>
                             </div>
                             <div class="<% entry.type %>" ng-switch-when="say">
-                                <div class="author"><% entry.author.username %></div>
+                                <div class="author"><% entry.author.fullname %></div>
                                 <div class="message"><% entry.message %></div>
                             </div>
                             <div class="default" ng-switch-default>
@@ -45,7 +45,9 @@
             </div>
             <div id="player-list">
                 <ul>
-                    <li class="player" ng-repeat="user in users"><% user.username %></li>
+                    <li class="player" ng-repeat="user in users">
+                        <abbr title="<% user.username %>"><% user.fullname || user.username %></abbr>
+                    </li>
                 </ul>
             </div>
             <div id="input" class="<% connection.status %>">

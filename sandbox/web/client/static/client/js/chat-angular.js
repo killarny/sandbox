@@ -77,21 +77,24 @@ angular.module('chat', ['ui.bootstrap'])
                         var username = data.username;
                         try { Service.event_cb.on_client_connected({
                             id: data.id,
-                            username: data.username
+                            username: data.username,
+                            fullname: data.username.split('@', 1)[0] // FIXME: use the actual fullname when available
                         }); } catch (e) { if (e.name === 'TypeError') {} }
                         break;
                     case 'client_disconnected':
                         var username = data.username;
                         try { Service.event_cb.on_client_disconnected({
                             id: data.id,
-                            username: data.username
+                            username: data.username,
+                            fullname: data.username.split('@', 1)[0] // FIXME: use the actual fullname when available
                         }); } catch (e) { if (e.name === 'TypeError') {} }
                         break;
                     case 'chat_say':
                         try { Service.event_cb.on_chat_say(
                             {
                                 id: data.author_id,
-                                username: data.author_username
+                                username: data.author_username,
+                                fullname: data.author_username.split('@', 1)[0] // FIXME: use the actual fullname when available
                             },
                             data.message
                         ); } catch (e) { if (e.name === 'TypeError') {} }
