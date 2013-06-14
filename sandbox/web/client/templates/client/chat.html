@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html ng-app="chat">
     <head>
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/css/base.css">
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/css/chat.css">
-        <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+        <!-- <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/css/base.css"> -->
+        <!-- <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/css/chat.css"> -->
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}client/css/bootstrap.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.css" rel="stylesheet">
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+        <script src="{{ STATIC_URL }}client/js/ui-bootstrap-tpls-0.3.0.min.js"></script>
         <script>
             var session_id = "{{ session_id }}";
         </script>
@@ -55,4 +57,5 @@
             </div>
         </div>
     </body>
+    <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
 </html>

@@ -14,7 +14,7 @@ function sortObject(obj) {
 }
 
 
-angular.module('chat', [])
+angular.module('chat', ['ui.bootstrap'])
     .config(function($interpolateProvider) {
         $interpolateProvider.startSymbol('<%').endSymbol('%>');
     })
