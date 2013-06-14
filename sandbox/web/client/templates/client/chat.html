@@ -35,37 +35,39 @@
                 <span ng-switch-when="connected" class="label label-success"><% connection.status %></span>
                 <span ng-switch-default class="label label-inverse"><% connection.status %></span>
             </div>
-            <div class="span9 well well-small">
-                <ul>
-                    <li class="history-entry" ng-repeat="entry in log">
-                        <div ng-switch on="entry.type">
-                            <div class="<% entry.type %>" ng-switch-when="status">
-                                <span class="muted"><% entry.message %></span>
+            <div class="row">
+                <div class="span9 well well-small">
+                    <ul>
+                        <li class="history-entry" ng-repeat="entry in log">
+                            <div ng-switch on="entry.type">
+                                <div class="<% entry.type %>" ng-switch-when="status">
+                                    <span class="muted"><% entry.message %></span>
+                                </div>
+                                <div class="<% entry.type %>" ng-switch-when="joined">
+                                    <span class="text-success"><% entry.user.fullname %> joined.</span>
+                                </div>
+                                <div class="<% entry.type %>" ng-switch-when="left">
+                                    <span class="text-error"><% entry.user.fullname %> left.</span>
+                                </div>
+                                <div class="<% entry.type %>" ng-switch-when="say">
+                                    <span class="badge badge-inverse"><% entry.author.fullname %></span>
+                                    <span class="message"><% entry.message %></span>
+                                </div>
+                                <div class="default" ng-switch-default>
+                                    <span class="muted"><% entry %></span>
+                                </div>
                             </div>
-                            <div class="<% entry.type %>" ng-switch-when="joined">
-                                <span class="text-success"><% entry.user.fullname %> joined.</span>
-                            </div>
-                            <div class="<% entry.type %>" ng-switch-when="left">
-                                <span class="text-error"><% entry.user.fullname %> left.</span>
-                            </div>
-                            <div class="<% entry.type %>" ng-switch-when="say">
-                                <span class="badge badge-inverse"><% entry.author.fullname %></span>
-                                <span class="message"><% entry.message %></span>
-                            </div>
-                            <div class="default" ng-switch-default>
-                                <span class="muted"><% entry %></span>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="span2 well well-small">
-                <ul>
-                    <li class="text-right" ng-repeat="user in users">
-                        <i class="icon-user"></i>
-                        <abbr title="<% user.username %>"><% user.fullname || user.username %></abbr>
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="span2 well well-small">
+                    <ul>
+                        <li class="text-right" ng-repeat="user in users">
+                            <i class="icon-user"></i>
+                            <abbr title="<% user.username %>"><% user.fullname || user.username %></abbr>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <form ng-submit="input_send()" class="input-prepend">
                 <span class="add-on">Say</span>
