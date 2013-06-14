@@ -11,15 +11,19 @@
             var session_id = "{{ session_id }}";
         </script>
         <script src="{{ STATIC_URL }}client/js/chat-angular.js"></script>
+        <title>sandbox</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
     <body ng-controller="client">
-        <div id="intro">
-            <h1>sandbox</h1>
-            <span>Nothing to see here.</span>
+        <div id="intro" class="container">
+            <div class="span12">
+                <h1>sandbox</h1>
+                <span>Nothing to see here.</span>
+            </div>
         </div>
-        <div id="chat">
-            <div id="history">
+        <div id="chat" class="container">
+            <div id="history" class="span10 well well-small">
                 <ul>
                     <li class="history-entry" ng-repeat="entry in log">
                         <div ng-switch on="entry.type">
@@ -43,19 +47,22 @@
                     </li>
                 </ul>
             </div>
-            <div id="player-list">
+            <div id="player-list" class="span2 well well-small">
                 <ul>
                     <li class="player" ng-repeat="user in users">
+                        <i class="icon-user"></i>
                         <abbr title="<% user.username %>"><% user.fullname || user.username %></abbr>
                     </li>
                 </ul>
             </div>
-            <div id="input" class="<% connection.status %>">
+        </div>
+        <div id="status" class="container">
+            <div id="input" class="<% connection.status %> span10">
                 <span id="title">input</span>
                 <form ng-submit="input_send()"><input ng-model="input"/></form>
             </div>
-            <div id="status" class="<% connection.status %>">
-                <span id="title"><% connection.status %></span>
+            <div id="status" class="<% connection.status %> span2">
+                <span class="label"><% connection.status %></span>
             </div>
         </div>
     </body>
