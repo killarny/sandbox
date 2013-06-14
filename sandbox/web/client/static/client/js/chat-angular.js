@@ -170,6 +170,7 @@ angular.module('chat', ['ui.bootstrap'])
 
             // user pressed enter in the input box
             $scope.input_send = function () {
+                if (!this.input) { return; }
                 ClientService.say(this.input);
                 this.input = '';
             }

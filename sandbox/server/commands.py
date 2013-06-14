@@ -31,6 +31,9 @@ class ClientCommands(JSONCommandProtocol):
     def command_chat_say(self, callback_id, message=''):
         """Say something in chat.
         """
+        # ignore empty messages
+        if not message:
+            return
         self.factory.broadcast_event('chat_say', {
             'author_id': self.hash,
             'author_username': self.user.username,
