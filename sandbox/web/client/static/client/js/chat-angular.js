@@ -3,12 +3,10 @@ function sortObject(obj) {
     // keys will be in any order
     keys.sort(); // maybe use custom sort, to change direction use .reverse()
     // keys now will be in wanted order
-
-    var sortedObject = new Object();
+    var sortedObject = {};
     for (var i=0; i<keys.length; i++) { // now lets iterate in sort order
         var key = keys[i];
-        var value = obj[key];
-        sortedObject[key] = value;
+        sortedObject[key] = obj[key];
     }
     return sortedObject;
 }
