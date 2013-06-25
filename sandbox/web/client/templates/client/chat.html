@@ -44,13 +44,13 @@
                                     <span class="muted"><% entry.message %></span>
                                 </div>
                                 <div class="<% entry.type %>" ng-switch-when="joined">
-                                    <span class="text-success"><% entry.user.fullname %> joined.</span>
+                                    <span class="text-success" tooltip-placement="left" tooltip="<% entry.user.username %>"><% entry.user.fullname %> joined.</span>
                                 </div>
                                 <div class="<% entry.type %>" ng-switch-when="left">
-                                    <span class="text-error"><% entry.user.fullname %> left.</span>
+                                    <span class="text-error" tooltip-placement="left" tooltip="<% entry.user.username %>"><% entry.user.fullname %> left.</span>
                                 </div>
                                 <div class="<% entry.type %>" ng-switch-when="say">
-                                    <span class="badge badge-inverse"><% entry.author.fullname %></span>
+                                    <span class="badge badge-inverse" tooltip-placement="left" tooltip="<% entry.author.username %>"><% entry.author.fullname %></span>
                                     <span class="message"><% entry.message %></span>
                                 </div>
                                 <div class="default" ng-switch-default>
@@ -64,7 +64,7 @@
                     <ul>
                         <li class="text-right" ng-repeat="user in users">
                             <i class="icon-user"></i>
-                            <abbr title="<% user.username %>"><% user.fullname || user.username %></abbr>
+                            <span tooltip-placement="right" tooltip="<% user.username %>"><% user.fullname || user.username %></span>
                         </li>
                     </ul>
                 </div>
